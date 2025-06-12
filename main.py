@@ -16,5 +16,7 @@ if __name__ == '__main__':
     parser = Parser(tokens)
     ast = parser.parse()
     c_code = generate_c(ast)
-    print("\nGenerated C Code:\n")
-    print(c_code)
+
+    with open("output.c", "w") as f:
+        f.write(c_code)
+    print("\nC code has been written to output.c")
