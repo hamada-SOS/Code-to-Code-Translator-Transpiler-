@@ -1,7 +1,9 @@
 #include <stdio.h>
 int main() {
-    char name[100];
-    scanf("%s", name);
-    printf("%s\n", name);
+    int x = 1;
+    while (x < 5) {
+        printf("%d\n", x);
+        x = x + 1;
+    }
     return 0;
 }

@@ -25,6 +25,12 @@ class ForLoop(ASTNode):
         self.end = end
         self.body = body
 
+class WhileLoop(ASTNode):
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+
+
 class IfElse(ASTNode):
     def __init__(self, condition, if_body, else_body):
         self.condition = condition
@@ -99,6 +105,19 @@ class Parser:
             self.eat('END')
             self.eat('FOR')
             return ForLoop(var, start, end, body)
+        
+        elif tok[0] == 'WHILE':
+            self.eat('WHILE')
+            left = self.eat('ID')
+            op = self.eat('OP')
+            right = self.eat('NUMBER') if self.current()[0] == 'NUMBER' else self.eat('ID')
+            condition = BinaryOp(left, op, right)
+            body = []
+            while self.current()[0] not in ('ENDWHILE', 'EOF'):
+                body.append(self.statement())
+            self.eat('ENDWHILE')
+            return WhileLoop(condition, body)
+
         elif tok[0] == 'IF':
             self.eat('IF')
             left = self.eat('ID')

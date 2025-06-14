@@ -8,7 +8,9 @@ token_specification = [
     ('FOR',      r'FOR'),
     ('FROM',     r'FROM'),
     ('TO',       r'TO'),
+    ('ENDWHILE', r'END[ \t]+WHILE'),
     ('END',      r'END'),
+    ('WHILE',    r'WHILE'),
     ('IF',       r'IF'),
     ('ELSE',     r'ELSE'),
     ('SET',      r'SET'),
@@ -29,7 +31,7 @@ def tokenize(code):
         value = mo.group()
         if kind == 'NUMBER':
             yield ('NUMBER', int(value))
-        elif kind in ('PRINT', 'READ', 'READSTR', 'FOR', 'FROM', 'TO', 'END', 'IF', 'ELSE', 'SET') or kind == 'ID':
+        elif kind in ('PRINT', 'READ', 'READSTR', 'FOR', 'FROM', 'TO', 'ENDWHILE','WHILE', 'END', 'IF', 'ELSE', 'SET') or kind == 'ID':
             yield (kind, value)
         elif kind == 'STRING':
             yield ('STRING', value.strip('"'))

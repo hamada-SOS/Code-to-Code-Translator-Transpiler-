@@ -37,6 +37,14 @@ def generate_c(ast):
             for stmt in node.body:
                 emit(stmt, indent + 4)
             lines.append(f"{sp}}}")
+
+        elif isinstance(node, WhileLoop):
+            cond = generate_expr(node.condition)
+            lines.append(f"{sp}while ({cond}) {{")
+            for stmt in node.body:
+                emit(stmt, indent + 4)
+            lines.append(f"{sp}}}")
+
         elif isinstance(node, IfElse):
             cond = generate_expr(node.condition)
             lines.append(f"{sp}if ({cond}) {{")
