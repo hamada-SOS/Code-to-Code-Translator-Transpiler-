@@ -30,7 +30,6 @@ class WhileLoop(ASTNode):
         self.condition = condition
         self.body = body
 
-
 class IfElse(ASTNode):
     def __init__(self, condition, if_body, else_body):
         self.condition = condition
@@ -105,31 +104,17 @@ class Parser:
             self.eat('END')
             self.eat('FOR')
             return ForLoop(var, start, end, body)
-        
         elif tok[0] == 'WHILE':
             self.eat('WHILE')
-            left = self.eat('ID')
-            op = self.eat('OP')
-            right = self.eat('NUMBER') if self.current()[0] == 'NUMBER' else self.eat('ID')
-            condition = BinaryOp(left, op, right)
+            condition = self.expression()
             body = []
             while self.current()[0] not in ('ENDWHILE', 'EOF'):
                 body.append(self.statement())
             self.eat('ENDWHILE')
             return WhileLoop(condition, body)
-
         elif tok[0] == 'IF':
             self.eat('IF')
-            left = self.eat('ID')
-            op = self.eat('OP')
-            tok = self.current()
-            if tok[0] == 'NUMBER':
-                right = self.eat('NUMBER')
-            elif tok[0] == 'ID':
-                right = self.eat('ID')
-            else:
-                raise SyntaxError(f"Expected NUMBER or ID, got {tok[0]}")
-            condition = BinaryOp(left, op, right)
+            condition = self.expression()
             if_body = []
             else_body = []
             while self.current()[0] not in ('ELSE', 'END', 'EOF'):
@@ -145,24 +130,37 @@ class Parser:
             raise SyntaxError(f"Unknown statement: {tok}")
 
     def expression(self):
+        return self.parse_binary_expr()
+
+    def parse_binary_expr(self, min_precedence=0):
+        left = self.atom()
+
+        while True:
+            tok = self.current()
+            if tok[0] != 'OP':
+                break
+            precedence = self.get_precedence(tok[1])
+            if precedence < min_precedence:
+                break
+            op = self.eat('OP')
+            right = self.parse_binary_expr(precedence + 1)
+            left = BinaryOp(left, op, right)
+        return left
+
+    def atom(self):
         tok = self.current()
         if tok[0] == 'ID':
-            left = self.eat('ID')
+            return self.eat('ID')
         elif tok[0] == 'NUMBER':
-            left = self.eat('NUMBER')
+            return self.eat('NUMBER')
         else:
             raise SyntaxError(f"Expected ID or NUMBER, got {tok[0]}")
 
-        if self.current()[0] == 'OP':
-            op = self.eat('OP')
-            right_tok = self.current()
-            if right_tok[0] == 'NUMBER':
-                right = self.eat('NUMBER')
-            elif right_tok[0] == 'ID':
-                right = self.eat('ID')
-            else:
-                raise SyntaxError(f"Expected ID or NUMBER, got {right_tok[0]}")
-            return BinaryOp(left, op, right)
-
-        return left
-
+    def get_precedence(self, op):
+        precedences = {
+            '*': 3, '/': 3, '%': 3,
+            '+': 2, '-': 2,
+            '==': 1, '!=': 1, '<': 1, '>': 1, '<=': 1, '>=': 1,
+            '=': 0
+        }
+        return precedences.get(op, -1)

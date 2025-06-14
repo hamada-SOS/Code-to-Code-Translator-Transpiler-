@@ -1,0 +1,69 @@
+SET x = 5
+PRINT x
+
+SET a = 10
+SET b = 20
+SET sum = a + b
+PRINT sum
+
+SET x = 15
+SET y = 10
+IF x > y
+    PRINT "x is greater"
+ELSE
+    PRINT "y is greater"
+END IF
+
+FOR i FROM 1 TO 3
+    PRINT i
+END FOR
+
+
+
+SET x = 1
+WHILE x <= 3
+    PRINT x
+    SET x = x + 1
+ENDWHILE
+
+
+READ age
+PRINT age
+
+
+
+READSTR name
+PRINT name
+
+
+FOR i FROM 1 TO 5
+    IF i % 2 = 0
+        PRINT "even"
+    ELSE
+        PRINT "odd"
+    END IF
+END FOR
+
+
+
+SET x = 1
+WHILE x < 5
+    PRINT x
+    SET x = x + 1
+END WHILE
+
+
+
+SET x = 1
+WHILE x <= 5
+    IF x % 2 = 0
+        PRINT "even"
+    ELSE
+        PRINT "odd"
+    END IF
+    SET x = x + 1
+ENDWHILE
+
+
+
+PRINT "Hello, World!"
